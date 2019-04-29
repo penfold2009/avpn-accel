@@ -1,4 +1,8 @@
 #!/bin/bash
+
+
+## Code modified to test git ###
+
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
 
