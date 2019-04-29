@@ -3,6 +3,9 @@
 
 ## Code modified to test git ###
 
+### This comment added in the test branch of git.
+
+
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
 
