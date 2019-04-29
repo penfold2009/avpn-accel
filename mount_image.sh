@@ -4,7 +4,9 @@
 ## Code modified to test git ###
 
 
-### This comment added in the master branch of git.  ##
+### This comment added in the test branch of git.
+
+>>>>>>> test
 
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
