@@ -536,7 +536,9 @@ fi
   for file in $(ls /etc/vibe.conf.d/*.temp)
     do 
      [ $debug -eq 1 ] && echo "file: $file<br>"
-     newfile=$(echo $file | cut -f 1-3 -d .)
+     #newfile=$(echo $file | cut -f 1-3 -d .)
+     ## CP 29/5/19. above line removes any chars following dots eg .68
+     newfile=${file%%.temp} ## just .temp should be removed.     
      [ $debug -eq 1 ] && echo "moving file '$file' to '$newfile'<br>"
      mv "$file" "$newfile"
   
