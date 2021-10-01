@@ -3,12 +3,13 @@
 
 <?
 . /usr/lib/webif/webif.sh 
-. /www/cgi-bin/webif/add_ip_functions.sh
+# . /www/cgi-bin/webif/add_ip_functions.sh
+. /www/cgi-bin/webif/add_url_functions.sh
 . /lib/vibe/webfuncs.sh
 
 #################################################################
 ## version 2 09/05/2018                                        ##
-##   Added warnings for mmissing DNS and internet connection   ##
+##   Added warnings for missing DNS and internet connection   ##
 ##   Unresolved URLs are now displayed in red                  ##
 ##                                                             ##
 ## version 1 25/07/2017                                        ##
@@ -61,8 +62,8 @@ test_url(){
  ### Do stuff here ###
           echo "<br>Checking $FORM_url.<br><br>"
           echo "<table style='width:50%'>"
-          #nslookup $FORM_url | awk '/^Address/ && NR >= 5  {print $0 "<br>"}END{print "<br>"}'
-          nslookup $FORM_url |awk '$3 ~ /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/ && NR >= 5 {urls[++count] = $3} \
+#          nslookup $FORM_url |awk '$3 ~ /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/ && NR >= 5 {urls[++count] = $3} \
+          nslookup $FORM_url 2> /dev/null |awk '$3 ~ /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/ && $1 =="Address" {urls[++count] = $3} \
                   END { \
                      if(count){\
                        print count" IP addresses : <br><br>"; \
@@ -144,7 +145,8 @@ current_urls="/etc/custom/url_check.html"
 # echo "FORM_Update: $FORM_Update<br>"
 # echo "FORM_check: $FORM_check<br>"
 
-    if  ping -c 1 www.bbc.co.uk >& /tmp/ping.test
+    if ping -c 1 -w 2 $pingtestserver >& /tmp/ping.test
+    ## if  ping -c 1 www.bbc.co.uk >& /tmp/ping.test
      then print_page
      
     elif grep -iq 'unknown host' /tmp/ping.test ; then

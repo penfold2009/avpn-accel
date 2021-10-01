@@ -18,6 +18,8 @@
 
 ############################################################################
 
+## 
+pingtestserver="88.150.165.135"
 
 write_to_table(){
 
@@ -536,9 +538,7 @@ fi
   for file in $(ls /etc/vibe.conf.d/*.temp)
     do 
      [ $debug -eq 1 ] && echo "file: $file<br>"
-     #newfile=$(echo $file | cut -f 1-3 -d .)
-     ## CP 29/5/19. above line removes any chars following dots eg .68
-     newfile=${file%%.temp} ## just .temp should be removed.     
+     newfile=$(echo $file | cut -f 1-3 -d .)
      [ $debug -eq 1 ] && echo "moving file '$file' to '$newfile'<br>"
      mv "$file" "$newfile"
   
@@ -601,7 +601,7 @@ lookup_urls (){
 
 rm /tmp/file_link_tests.table >& /dev/null
 
-if ping -c 1 www.bbc.co.uk >& /tmp/ping.test
+if ping -c 1 -w 2 $pingtestserver >& /tmp/ping.test
  then  internet=1
 else 
     if grep -iq 'Network unreachable' /tmp/ping.test >& /dev/null
@@ -624,7 +624,9 @@ while read line
      [ $debug -eq 1 ] && echo "internet: $internet<br>"
      if [ "$internet" -eq 1 ]
          then 
-           $(nslookup $url | grep -qi 'address 1:') && echo "$line black" >> /tmp/file_link_tests.table || echo "$line red" >> /tmp/file_link_tests.table
+           ##$(nslookup $url | grep -qi 'address 1:') && echo "$line black" >> /tmp/file_link_tests.table || echo "$line red" >> /tmp/file_link_tests.table
+           $(nslookup $url | awk '/Name/{name++};/Address 1:/{if (name){print}}' | grep -qi 'address 1:') && echo "$line black" >> /tmp/file_link_tests.table || echo "$line red" >> /tmp/file_link_tests.table
+
      else echo "$line orange" >> /tmp/file_link_tests.table
     fi
    
